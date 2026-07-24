@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>春日明信片照片墙</title>
+    <title>明信片照片墙</title>
     <style>
         * {
             margin: 0;
@@ -11,23 +11,37 @@
             box-sizing: border-box;
         }
         body {
-            /* 草长莺飞春日活泼背景：渐变青草绿+淡碎花纹理 */
-            background: linear-gradient(160deg, #dcf6dd 0%, #e7f7e8 45%, #f0f9e8 100%);
-            background-image: 
-                radial-gradient(#b8e4bc 6%, transparent 6%),
-                radial-gradient(#c7edc9 4%, transparent 4%);
-            background-size: 90px 90px;
-            background-position: 0 0, 45px 45px;
+            /* 富士Classic Chrome胶片渐变：淡奶蓝天+柔化青绿草地，富士标志性低饱和清透色调 */
+            background: linear-gradient(180deg,
+                #b4d2e7 0%,
+                #c7e0f0 30%,
+                #d8e9f5 50%,
+                #c2e2d6 50%,
+                #a8d7bc 70%,
+                #8fc8a9 100%
+            );
+            position: relative;
             padding: 40px 20px;
             min-height: 100vh;
         }
+        /* 富士胶片颗粒叠层，细腻磨砂胶片质感，无生硬像素格 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
         h1 {
             text-align: center;
-            color: #2d6b30;
+            color: #356b4a;
             margin-bottom: 50px;
             font-weight: normal;
             font-family: "宋体", serif;
             letter-spacing: 3px;
+            text-shadow: 0 1px 3px rgba(53,107,74,0.12);
         }
         /* 明信片墙容器 */
         .wall {
@@ -37,11 +51,11 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 40px 30px;
         }
-        /* 单张明信片卡片 */
+        /* 单张明信片卡片，阴影调柔和适配富士浅色系 */
         .postcard {
             background: #fff;
             padding: 12px;
-            box-shadow: 2px 3px 12px rgba(30,70,35,0.18);
+            box-shadow: 2px 3px 14px rgba(45,90,60,0.15);
             transform: rotate(var(--rotate));
             cursor: pointer;
             transition: all 0.3s ease;
@@ -49,7 +63,7 @@
         }
         .postcard:hover {
             transform: rotate(0deg) scale(1.05);
-            box-shadow: 4px 6px 18px rgba(30,70,35,0.28);
+            box-shadow: 4px 6px 20px rgba(45,90,60,0.22);
         }
         .postcard img {
             width: 100%;
@@ -61,7 +75,7 @@
             margin-top: 10px;
             text-align: center;
             font-size: 14px;
-            color: #2d522f;
+            color: #2f5c3e;
         }
         /* 弹窗遮罩层 */
         .modal-mask {
@@ -70,7 +84,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.75);
             display: none;
             align-items: center;
             justify-content: center;
@@ -94,26 +108,26 @@
         }
         .modal-title {
             font-size: 24px;
-            color: #1f4721;
+            color: #275436;
             margin-bottom: 12px;
         }
         .modal-desc {
             font-size: 16px;
-            color: #3c663e;
+            color: #386849;
             line-height: 1.7;
         }
         .close-btn {
             margin-top: 25px;
             padding: 10px 30px;
             border: none;
-            background: #58995b;
+            background: #68a87e;
             color: white;
             font-size: 15px;
             cursor: pointer;
             border-radius: 2px;
         }
         .close-btn:hover {
-            background: #3e7a41;
+            background: #4e8c63;
         }
     </style>
 </head>
@@ -134,13 +148,12 @@
     </div>
 
     <script>
-        // ========== 在这里添加你的照片信息 ==========
-        // 格式：{img:"图片文件名", title:"照片名字", desc:"注释文字", rotate:倾斜角度}
+        // ========== 15张照片数据，直接修改img、title、desc即可 ==========
         const photoList = [
             {
                 img: "photo1.jpg",
                 title: "梦幻摩天轮",
-                desc: "春天的逍遥津公园旁，伟大的梦想在启航",
+                desc: "春天的逍遥津公园旁，伟大的梦想正在启航",
                 rotate: "-2deg"
             },
             {
@@ -148,6 +161,84 @@
                 title: "落日长江",
                 desc: "我望着长江，它望着我。",
                 rotate: "1.5deg"
+            },
+            {
+                img: "photo3.jpg",
+                title: "告别",
+                desc: "数声风笛离亭晚，君向潇湘我向秦。",
+                rotate: "-1deg"
+            },
+            {
+                img: "photo4.jpg",
+                title: "新年",
+                desc: "新年伊始，万象更新，愿你我都能心怀希望。",
+                rotate: "2deg"
+            },
+            {
+                img: "photo5.jpg",
+                title: "新生",
+                desc: "向阳生长",
+                rotate: "-1.8deg"
+            },
+            {
+                img: "photo6.jpg",
+                title: "春日樱花",
+                desc: "风吹花落，一整个春天都落在肩头。",
+                rotate: "0.8deg"
+            },
+            {
+                img: "photo7.jpg",
+                title: "合柴故事",
+                desc: "触摸历史的温度，感受城市的脉搏。",
+                rotate: "-2.2deg"
+            },
+            {
+                img: "photo8.jpg",
+                title: "斗笠",
+                desc: "走过烈日也走过风雨，总会迎来丰收的秋天。",
+                rotate: "1.2deg"
+            },
+            {
+                img: "photo9.jpg",
+                title: "人间烟火",
+                desc: "夜晚，淮河路步行街上演着它的故事",
+                rotate: "-0.6deg"
+            },
+            {
+                img: "photo10.jpg",
+                title: "窗边春风",
+                desc: "远芳侵古道，晴翠接荒城。",
+                rotate: "1.6deg"
+            },
+            {
+                img: "photo11.jpg",
+                title: "千禧旧梦",
+                desc: "这里留存着老一辈工大人的青春记忆。",
+                rotate: "-1.4deg"
+            },
+            {
+                img: "photo12.jpg",
+                title: "六安路旁",
+                desc: "被困在时间的角落里。",
+                rotate: "0.5deg"
+            },
+            {
+                img: "photo13.jpg",
+                title: "工大玉兰",
+                desc: "玉兰花开，春意盎然。南村、工大，回不去的屯溪路193号。",
+                rotate: "-1.1deg"
+            },
+            {
+                img: "photo14.jpg",
+                title: "月升",
+                desc: "灵谷寺旁，皎洁月下。",
+                rotate: "2.1deg"
+            },
+            {
+                img: "photo15.jpg",
+                title: "憋气比赛",
+                desc: "猜猜谁是第一",
+                rotate: "-0.9deg"
             }
         ];
 
