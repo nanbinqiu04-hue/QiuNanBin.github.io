@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春日明信片照片墙</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            /* 草长莺飞春日活泼背景：渐变青草绿+淡碎花纹理 */
+            background: linear-gradient(160deg, #dcf6dd 0%, #e7f7e8 45%, #f0f9e8 100%);
+            background-image: 
+                radial-gradient(#b8e4bc 6%, transparent 6%),
+                radial-gradient(#c7edc9 4%, transparent 4%);
+            background-size: 90px 90px;
+            background-position: 0 0, 45px 45px;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #2d6b30;
+            margin-bottom: 50px;
+            font-weight: normal;
+            font-family: "宋体", serif;
+            letter-spacing: 3px;
+        }
+        /* 明信片墙容器 */
+        .wall {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 40px 30px;
+        }
+        /* 单张明信片卡片 */
+        .postcard {
+            background: #fff;
+            padding: 12px;
+            box-shadow: 2px 3px 12px rgba(30,70,35,0.18);
+            transform: rotate(var(--rotate));
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        .postcard:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 4px 6px 18px rgba(30,70,35,0.28);
+        }
+        .postcard img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+        .postcard-name {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #2d522f;
+        }
+        /* 弹窗遮罩层 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 999;
+        }
+        /* 弹窗详情卡片 */
+        .modal-box {
+            background: #fff;
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 6px;
+        }
+        .modal-box img {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 24px;
+            color: #1f4721;
+            margin-bottom: 12px;
+        }
+        .modal-desc {
+            font-size: 16px;
+            color: #3c663e;
+            line-height: 1.7;
+        }
+        .close-btn {
+            margin-top: 25px;
+            padding: 10px 30px;
+            border: none;
+            background: #58995b;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        .close-btn:hover {
+            background: #3e7a41;
+        }
+    </style>
+</head>
+<body>
+    <h1>我的明信片相册</h1>
+
+    <!-- 明信片墙容器 -->
+    <div class="wall" id="wallBox"></div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-mask" id="mask">
+        <div class="modal-box">
+            <img id="modalImg" src="" alt="">
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-desc" id="modalDesc"></p>
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== 在这里添加你的照片信息 ==========
+        // 格式：{img:"图片文件名", title:"照片名字", desc:"注释文字", rotate:倾斜角度}
+        const photoList = [
+            {
+                img: "photo1.jpg",
+                title: "梦幻摩天轮",
+                desc: "春天的逍遥津公园旁，伟大的梦想在启航",
+                rotate: "-2deg"
+            },
+            {
+                img: "photo2.jpg",
+                title: "落日长江",
+                desc: "我望着长江，它望着我。",
+                rotate: "1.5deg"
+            }
+        ];
+
+        // 渲染明信片墙
+        const wallBox = document.getElementById('wallBox');
+        photoList.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'postcard';
+            card.style.setProperty('--rotate', item.rotate);
+            card.innerHTML = `
+                <img src="${item.img}" alt="${item.title}">
+                <div class="postcard-name">${item.title}</div>
+            `;
+            // 点击打开详情弹窗
+            card.onclick = () => openModal(item);
+            wallBox.appendChild(card);
+        });
+
+        // 弹窗控制
+        const mask = document.getElementById('mask');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+
+        function openModal(data) {
+            modalImg.src = data.img;
+            modalTitle.innerText = data.title;
+            modalDesc.innerText = data.desc;
+            mask.style.display = 'flex';
+        }
+        function closeModal() {
+            mask.style.display = 'none';
+        }
+        // 点击空白处关闭弹窗
+        mask.onclick = (e) => {
+            if(e.target === mask) closeModal();
+        }
+    </script>
+</body>
+</html>
