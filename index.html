@@ -105,6 +105,7 @@
             object-fit: contain;
             display: block;
             margin-bottom: 20px;
+            transition: opacity 0.3s ease;
         }
         .modal-title {
             font-size: 24px;
@@ -249,7 +250,7 @@
             card.className = 'postcard';
             card.style.setProperty('--rotate', item.rotate);
             card.innerHTML = `
-                <img src="${item.img}" alt="${item.title}">
+                <img src="${item.img.replace(/\.\w+$/, '_thumb$&')}" alt="${item.title}" loading="lazy">
                 <div class="postcard-name">${item.title}</div>
             `;
             // 点击打开详情弹窗
@@ -264,10 +265,18 @@
         const modalDesc = document.getElementById('modalDesc');
 
         function openModal(data) {
-            modalImg.src = data.img;
             modalTitle.innerText = data.title;
             modalDesc.innerText = data.desc;
+            // 弹窗先用缩略图占位，同时后台加载原图
+            modalImg.src = data.img.replace(/\.\w+$/, '_thumb$&');
+            modalImg.style.opacity = '0.6';
             mask.style.display = 'flex';
+            const fullImg = new Image();
+            fullImg.onload = () => {
+                modalImg.src = data.img;
+                modalImg.style.opacity = '1';
+            };
+            fullImg.src = data.img;
         }
         function closeModal() {
             mask.style.display = 'none';
